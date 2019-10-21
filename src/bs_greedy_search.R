@@ -23,7 +23,6 @@ bs_greedy_search = function(data, numIter) {
   bsResults = list()
   progress(0) # inital tick of the pb
   for(i in 1:bootTrials) {
-    set.seed(47 + i) # for reproducibility
     # Sample from your data with replacement
     index       = sample(ncol(data), replace = TRUE)
     bsData      = data[1:n_nodes, index] # get the data from the bs sampled indexes

@@ -4,18 +4,20 @@ cat("\f") # clear the console
 source('./utils.R') # source the utils functions
 source('./bs_greedy_search.R') # source the bs GS
 
+set.seed(47) # for reproducibility
+
 ####### Data Generation
 m_obs = 100 # number of observations
 var_noise = 1 # noise of the data
 data = make_test_Data(m_obs, var_noise) # generate data
 
 ####### Call the BS Greedy Search Algorithm
-bsIterations = 20 # num BS iterations
+bsIterations = 40 # num BS iterations
 start_time = Sys.time()
 bsResults = bs_greedy_search(data, bsIterations) # get the bs output list
 end_time = Sys.time()
 elapsed_time = end_time - start_time
-cat('\nElapsed time for bootstrap Greedy Search: ', elapsed_time, '.\n')
+cat('\nElapsed time for bootstrap Greedy Search: ', elapsed_time, '\n')
 
 ###### Evaluate the results
 # sum over all values outputed by the GS
