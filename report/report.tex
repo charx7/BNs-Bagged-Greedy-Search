@@ -38,7 +38,8 @@
 	models', given a set of variables (nodes) each one represents a random
 	variable and the edged between the nodes represent the conditional
 	probability dependencies of our nodes. More formally: Each variable $X_{i}$
-	is represented as a node in a \textbf{DAG-directed acyclic graph}.
+	is represented as a node in a \textbf{DAG-directed acyclic
+	graph}\cite{bnsBasics}.
 	\begin{equation}
 		P(X_{1}, X_{2}, \dots ,X_{N}) = \prod_{i=1}^{N} P(X_{i} \ | \ pa(X_{i}))	
 	\end{equation}
@@ -97,7 +98,7 @@
 	to our data. But in order to due this we would need to score all the possible
 	directed acyclical graphs (DAGS) that our data can form. This is a function
 	dependent on the number of nodes in our data grows super exponentially
-	[insert ref], so searching for all possible BGe scores would be a
+	\cite{bnsBasics}, so searching for all possible BGe scores would be a
 	non-computationally feasible task. This is where the \textbf{Greedy Search}
 	algorithm comes to play. 
 	\\
@@ -155,20 +156,19 @@
 			drastically.
 	\end{itemize}
 	To make-up for some of this limitations various improvement over greedy
-	search algorithms have been proposed[insert ref] On the next section of our
+	search algorithms have been proposed\cite{bnsTechniques}. On the next section of our
 	paper we will discuss one of them \textbf{Bootstrap Aggregation Greedy Search}.
 	\section{Bootstrap Aggregation Greedy Search}
 	In this section we will explain what boostraping is and then proceed to analyze the results of the \textbf{Bootstrap
-	Aggregation Greedy Search} algorithm[insert ref] on the \textbf{RAF-pathway} data.
+	Aggregation Greedy Search} algorithm\cite{baggedBS1} on the \textbf{RAF-pathway} data.
 	\subsection{Bootstrap}
 	The bootstrap technique is widely used and recognized for its inferential
-	power in statistics [insert ref]. Bootstrapping makes use of the data and as
+	power in statistics\cite{baggedBS1}. Bootstrapping makes use of the data and as
 	if it was a probability distribution and takes samples \textbf{with replacement}
 	with it. Then by using a \textbf{model averaging} technique we will sum over all greedy search
 	results and dividing by the number of times we took a sample from our data. 
 	This is particularly useful with small data since the search space of Bayesian networks is
-	not sharply peaked around a single model. [ref]
-	\subsection{Bootstrap Aggregation Greedy Search Algorithm}
+	not sharply peaked around a single model\cite{baggedBS1}. 
 	The Bootstrap Aggregation Greedy Search Algorithm (bagged GS) is a natural
 	extension of the greedy search algorithm, it tries solve some of the
 	disadvantages of the greedy search algorithm using boostrap as an auxiliary
@@ -223,10 +223,14 @@
 	the github repository: \url{https://github.com/charx7/BNs-Bagged-Greedy-Search} as well in the appendix of the paper.
 	\subsection{AUROC Score vs Number of Bagged GS Iterations}
 	Figure \ref{fig:aurocBsIterations} shows that if we increase the amount of BS iterations on our
-	algorithm our results will improve, the setup for this experiment was using
+	algorithm our results will improve until after 40 BS iterations where our
+	results become just marginally better, as shown in
+	Figure \ref{fig:aurocBsIterations} the improvement of the AUROC of 80 BS
+	iterations is within the error range of of 40 BS
+	iterations, the setup for this experiment was using
 	the \textbf{RAF pathway} simulated data with $m=50$ samples. The experiment
 	was also done with $m=100$ samples but in that case the number of BS
-	iterations did not seem to improve the AUROC score as dramatically as in the
+	iterations did not seem to improve the AUROC score as much as in the
 	$m=50$ case. The experiment was repeated 5 times to get an estimate of the
 	mean and standard deviation of our results. To show the effect of the number of samples on the values of
 	AUROC we did another experiment described on the next sub-section.
@@ -239,12 +243,28 @@
 	\end{figure}
 
 	\subsection{AUROC Score vs Number of Data Points}
-	Figure Y shows that the Bagged GS algorithm is also sensible to the number of
+	Figure \ref{fig:auroc_sample_size} shows that the Bagged GS algorithm is also sensible to the number of
 	samples that our data contains; the experiment was done with a fixed number
-	of \textbf{20 BS iterations} and a variation in our sample size \textbf{from 20 to 100 in
+	of \textbf{40 BS iterations} and a variation in our sample size \textbf{from 20 to 100 in
 	steps of 10}. The experiment was repeated 3 times for each value of the sample
 	size to also get an estimate on the mean and standard deviation of our
 	results.
+	% figure of aucroc - sample size 
+	\begin{figure}[ht]
+		\includegraphics[width=8cm]{auroc_sample_size}
+		\centering
+		\caption{Mean AUROC vs Sample Size from M=20 to M=100}
+		\label{fig:auroc_sample_size}
+	\end{figure}
+	We can observe that once our data goes beyond 60 data points, then an
+	increase in sample size does not lead to a significant increase in AUROC
+	metrics. All of our results after M=60 are within the estimated error. \\
+	The experiment was run with a fixed number of 40 BS iterations because of our
+	observed results on the first experiment. But it is also theoretically
+	possible to further increase the AUROC of our models by increasing the number
+	of BS iterations, due to lack of computing power we could not further explore
+	this possibilities, our experiment took more
+	than 3 hours to run on an 8 core i7-3.8 GHz modern CPU.
 
 	\subsection{Bagged GS vs MCMC vs GS AUROC}
 	In this experimental setting we did 3 experiments on data sets of varying
@@ -252,8 +272,12 @@
 	Bagged GS with 40 iterations, MCMC with 20,000 iterations and vanilla GS. The
 	experiment was repeated 5 times to get mean and standard deviation
 	statistics. Afterwards we did a \textbf{t-test} on the obtained means resulting in
-	table X. 
+	table X.
 
 	\section*{Appendix}
+
+	\bibliographystyle{unsrt}
+	\bibliography{biblio}
+
 \end{document}
 

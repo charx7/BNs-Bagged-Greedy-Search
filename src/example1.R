@@ -33,4 +33,4 @@ SCORES_undirected = SCORES_undirected/bsIterations
 true_Net = make_true_Net()
 true_Net = true_Net + t(true_Net)
 AUROC    = compute_AUROC(SCORES_undirected,true_Net)
-cat('The AUROC of the experiment was:', AUROC)
+cat('The AUROC of the experiment was:', AUROC, '\n')

@@ -7,3 +7,5 @@
 /report/*.pdf
 /report/*.toc
 /report/*.out
+/report/*.bbl
+/report/*.blg

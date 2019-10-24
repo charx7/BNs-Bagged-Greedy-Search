@@ -25,7 +25,7 @@ for (j in 1:3){
   for (i in 1:length(dataList)) {
     data = dataList[[i]] # Get the current data
     ####### Call the BS Greedy Search Algorithm
-    bsIterations = 8 # num BS iterations
+    bsIterations = 40 # num BS iterations
     start_time = Sys.time()
     bsResults = bs_greedy_search(data, bsIterations) # get the bs output list
     end_time = Sys.time()
@@ -56,9 +56,15 @@ AUROC_matrix_means = colMeans(AUROC_matrix) # calculate the means of the experim
 AUROC_matrix_std = sqrt(apply(AUROC_matrix,2,var)) # calculate the std
 library(ggplot2)
 plot(AUROC_matrix_means, type = 'o') # starndard plot
+AUROC_df = as.data.frame(AUROC_matrix_means) # to be able to plot with ggplot
 mean_minus_std = AUROC_matrix_means - AUROC_matrix_std
 mean_plus_std = AUROC_matrix_means + AUROC_matrix_std
-ggplot(data=AUROC_df, aes(x=c(1:9), y=AUROC_df$AUROC_matrix_means)) 
-+ geom_line() 
-+ geom_point() 
-+ geom_errorbar(aes(ymin= mean_minus_std, ymax = mean_plus_std))
+p = ggplot(data=AUROC_df, aes(x=seq(20,100,10), y=AUROC_df$AUROC_matrix_means)) +
+  geom_line() + 
+  geom_point() + 
+  geom_errorbar(aes(ymin= mean_minus_std, ymax = mean_plus_std)) +
+  labs(title = "Mean AUROC vs Sample Size") + 
+  xlab('Sample Size') +
+  ylab('Mean AUROC') +
+  geom_point(size=3, shape=21, fill="white")  # 21 is filled circle
+p
