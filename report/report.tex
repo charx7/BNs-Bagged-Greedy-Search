@@ -108,14 +108,14 @@
 	% Ahora empieza el pseudocodigo de GS algo
 	\begin{algorithm}[H]
 	\SetAlgoLined
-	\KwData{data matrix, incidence\_matrix}
-	\KwResult{Incidence Matrix that best fit's the data}
+	\KwData{$data$: data matrix, $inc\_start$: valid starting incidence\_matrix}
+	\KwResult{$G_{i}$: Incidence Matrix that best fit's the data}
 	\emph{The Initial Incidence Matrix can be a matrix of just zeros}\;
-	$G_{1} \gets incidence\_matrix$\;	
+	$G_{1} \gets inc\_start$\;	
 	\emph{Get all the neighbors $G_{1,i},\dots,G_{i,N}$ of $G_{i}$}\;	
 	\For{it $\in {1,2,\dots}$ } {
 	\emph{Compute the current score of the graph $G_{i}$}\;
-	currScore = computeScores($G_{i}, data$)\;
+	currScore = computeScores($G_{i}$, $data$)\;
 	neigs = getNeighbours($G_i$)\;	
 	\emph{Compute their BGe scores}\;
 	scores = computeScores(neigs)\;
@@ -153,11 +153,11 @@
 			drastically.
 	\end{itemize}
 	To make-up for some of this limitations various improvement over greedy
-	search algorithms have been proposed [insert ref] On the next section of our
+	search algorithms have been proposed[insert ref] On the next section of our
 	paper we will discuss one of them \textbf{Bootstrap Aggregation Greedy Search}.
 	\section{Bootstrap Aggregation Greedy Search}
 	In this section we will explain what boostraping is and then proceed to analyze the results of the \textbf{Bootstrap
-	Aggregation Greedy Search} algorithm on the \textbf{RAF-pathway} data.
+	Aggregation Greedy Search} algorithm[insert ref] on the \textbf{RAF-pathway} data.
 	\subsection{Bootstrap}
 	The bootstrap technique is widely used and recognized for its inferential
 	power in statistics [insert ref]. Bootstrapping makes use of the data and as
@@ -166,9 +166,66 @@
 	results and dividing by the number of times we took a sample from our data. 
 	This is particularly useful with small data since the search space of Bayesian networks is
 	not sharply peaked around a single model. [ref]
-	\subsection{Bootstrap Aggregation Algorithm}
-	Hi ill be a typed algorithm		
-	\section*{Appendix}
+	\subsection{Bootstrap Aggregation Greedy Search Algorithm}
+	The Bootstrap Aggregation Greedy Search Algorithm (bagged GS) is a natural
+	extension of the greedy search algorithm, it tries solve some of the
+	disadvantages of the greedy search algorithm using boostrap as an auxiliary
+	method to sample data. By running the Greedy Search algorithm not on the data
+	itself, but in a bootstrapped sample of our data many times, the
+	\textbf{local minima} problem we had in Vanilla Greedy Search is avoided. \\
+	Another advantage of \textbf{bagged GS} over GS is that by taking the average
+	across all greedy search results on the sampled data we avoid incorrectly
+	assessing that the posterior probability of our model given the data is
+	peaked around a single model. As it was mentioned before this is
+	particularly useful with small datasets. \\
+	The main drawback of bagged GS is its execution time, if the greedy search
+	algorithm was expensive to compute over a single dataset with many edges,
+	then doing GS over many datasets its just going to multiply the cost by the
+	number of bootstrap iterations. 
+		\begin{algorithm} % consider the [H] float flag
+			\SetAlgoLined
+			\KwData{$data$: data matrix, $inc\_start$: starting incidence matrix,
+			$M$: Bootstrap iterations}
+			\KwResult{$G^{*}$: The average incidence matrix over all boostrap
+			iterations of the vanilla greedy search algorithm}
+			\emph{Initialize the algorithm with an empty list of incidence matrices
+			Glist}\;
+			Glist $\gets$ empty list\; 
+			\For{it in 1:$M$}{
+				\emph{Re-sample N data points \textbf{with replacement} from the data
+				matrix: data}\;
+				$D_{i}$ = sample($data$)\;
+				\emph{Do a greedy search with the sampled data set $D_{i}$}\;
+				currGreedy = greedySearch($D_{i}$, $inc\_start$)\;
+				\emph{Append the resulting best graph for the current greedy search to the vector of
+				results}\;
+				Glist.append(currGreedy)
+			}
+			\emph{Finally we compute the average incidence matrix by summing over all
+				elements on the list $Glist$ and dividing by the number of bootstrap
+			iterations}\;
+			$G^{*}$ = $\frac{1}{M}\sum_{G_{i} \in Glist}G_{i}$
+			\caption{Bootstrap Aggregated Greedy Search Algorithm}
+			\label{alg:baggedgreedy}
+	  \end{algorithm}	
+	\section{Experimental Results}
+	Bagged GS was implemented in the programming language \textbf{R} as an
+	extension of the GS and BGe scoring algorithms. Artificially generated RAF
+	pathway data was also generated for testing purposes. \\
+	As a mean to verify the effectiveness of our model we used
+	AUROC (area under the curve receiver operator characteristic) as a scoring
+	metric. We did various experiments with \textbf{varying number of initial
+	datapoints} and \textbf{varying number of bootstrap iterations}. Finally a
+	comparison with an struct-MCMC (Markov chain Monte Carlo)  algorithm and
+	vanilla greedy search was made. All of the code written for this project is available for download at
+	the github repository: XXXX as well in the appendix of the paper.
+	\subsection{}
 
+
+
+
+
+
+	\section*{Appendix}
 \end{document}
 
