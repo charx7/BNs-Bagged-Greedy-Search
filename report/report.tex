@@ -25,6 +25,8 @@
 \date{\textit{University of Groningen, P.O.Box 72 9700AB Groningen}}
 % estilo de pagina (le da formatos cheveres o simples
 \pagestyle{empty}
+%Path relative to the main .tex file 
+\graphicspath{{./images/}}
 
 \begin{document}
 	\maketitle % inserta el titulo al documento
@@ -218,13 +220,39 @@
 	datapoints} and \textbf{varying number of bootstrap iterations}. Finally a
 	comparison with an struct-MCMC (Markov chain Monte Carlo)  algorithm and
 	vanilla greedy search was made. All of the code written for this project is available for download at
-	the github repository: XXXX as well in the appendix of the paper.
-	\subsection{}
+	the github repository: \url{https://github.com/charx7/BNs-Bagged-Greedy-Search} as well in the appendix of the paper.
+	\subsection{AUROC Score vs Number of Bagged GS Iterations}
+	Figure \ref{fig:aurocBsIterations} shows that if we increase the amount of BS iterations on our
+	algorithm our results will improve, the setup for this experiment was using
+	the \textbf{RAF pathway} simulated data with $m=50$ samples. The experiment
+	was also done with $m=100$ samples but in that case the number of BS
+	iterations did not seem to improve the AUROC score as dramatically as in the
+	$m=50$ case. The experiment was repeated 5 times to get an estimate of the
+	mean and standard deviation of our results. To show the effect of the number of samples on the values of
+	AUROC we did another experiment described on the next sub-section.
+	% figure of aucroc - bs iterations
+	\begin{figure}[ht]
+		\includegraphics[width=8cm]{meanAUROCvsBSIterations}
+		\centering
+		\caption{Mean AUROC vs Bootstrap Iterations on M=50 datapoints}
+		\label{fig:aurocBsIterations}
+	\end{figure}
 
+	\subsection{AUROC Score vs Number of Data Points}
+	Figure Y shows that the Bagged GS algorithm is also sensible to the number of
+	samples that our data contains; the experiment was done with a fixed number
+	of \textbf{20 BS iterations} and a variation in our sample size \textbf{from 20 to 100 in
+	steps of 10}. The experiment was repeated 3 times for each value of the sample
+	size to also get an estimate on the mean and standard deviation of our
+	results.
 
-
-
-
+	\subsection{Bagged GS vs MCMC vs GS AUROC}
+	In this experimental setting we did 3 experiments on data sets of varying
+	size: \{20, 50, 100\} and subsequently compared the AUROC score obtained with
+	Bagged GS with 40 iterations, MCMC with 20,000 iterations and vanilla GS. The
+	experiment was repeated 5 times to get mean and standard deviation
+	statistics. Afterwards we did a \textbf{t-test} on the obtained means resulting in
+	table X. 
 
 	\section*{Appendix}
 \end{document}
