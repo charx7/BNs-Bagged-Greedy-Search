@@ -27,6 +27,18 @@
 \pagestyle{empty}
 %Path relative to the main .tex file 
 \graphicspath{{./images/}}
+% For the color format of the appendix code
+\lstset{language=R,
+    basicstyle=\small\ttfamily,
+    stringstyle=\color{gray},
+    otherkeywords={0,1,2,3,4,5,6,7,8,9},
+    morekeywords={TRUE,FALSE},
+    deletekeywords={data,frame,length,as,character},
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+}
+% Para quitar los warnings de underful Hbox etc
+\hbadness=99999  % or any number >=10000
 
 \begin{document}
 	\maketitle % inserta el titulo al documento
@@ -271,10 +283,84 @@
 	size: \{20, 50, 100\} and subsequently compared the AUROC score obtained with
 	Bagged GS with 40 iterations, MCMC with 20,000 iterations and vanilla GS. The
 	experiment was repeated 5 times to get mean and standard deviation
-	statistics. Afterwards we did a \textbf{t-test} on the obtained means resulting in
-	table X.
+	statistics. Afterwards we did a \textbf{paired t-test} on the obtained means
+	to check for statistical significance of our results.
+	Table \ref{tabla:iBest}.
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|}
+		 \hline
+		 \multicolumn{3}{|c|}{Greedy Search AUROC} \\
+		 \hline
+		 Dataset & $\mu$ & $\sigma$ \\
+		 \hline
+		 m20 & 0.70 & 0.05 \\
+		 m50 & 0.79  & 0.07 \\
+		 m100 & 0.80 & 0.11 \\
+		 \hline
+		 \multicolumn{3}{|c|}{Bagged Greedy Search AUROC} \\
+		 \hline
+		 Dataset & $\mu$ & $\sigma$ \\
+		 \hline
+		 m20 & 0.80 & 0.06 \\
+		 m50 & 0.92  & 0.04 \\
+		 m100 & 0.92 & 0.06 \\
+		 \hline
+		 \multicolumn{3}{|c|}{MCMC AUROC} \\
+		 \hline
+		 Dataset & $\mu$ & $\sigma$ \\
+		 \hline
+		 m20 & 0.81 & 0.05 \\
+		 m50 & 0.90  & 0.06 \\
+		 m100 & 0.93 & 0.03 \\
+		 \hline
+		\end{tabular}
+		\caption{AUROC statistics based on 5 datasets using Greedy Search, Bagged
+			Greedy Search with 40 iterations and 20,000 iterations of the MCMC algorithm.}
+		\label{tabla:iBest}
+	\end{table}
+	The p-value of the \textbf{paired two-sided t-test} of the AUROC scores of the GS algorithm
+	and the Bagged GS algorithm was: \textbf{4.89e-07} suggesting very strongly that the
+	difference in means of AUROC scores is not 0. On the other hand doing the
+	same test on Bagged GS algorithm and MCMC AUROC score resulted on a p-value
+	of: \textbf{0.9175} strongly suggesting that there is no difference between our
+	results obtained from Bagged GS and the MCMC algorithms. Another important
+	thing to notice is that Bagged GS not only increases the mean AUROC score but
+	also \textbf{decreases its standard deviation} making it a much more stable method
+	than plain GS.
+	\\
+	As a side note: the amount of computing time dedicated to getting the output
+	of this table was massive due to the enormous time that Bagged GS takes to
+	complete in just one configuration of the data.
+
+	\section{Conclusions}
+	Even though Bagged Greedy Search is a straightforward conceptually simple
+	algorithm that leads to a substantial improvement over vanilla greedy search,
+	the amount of time it takes to compute all the scores in all the neighborhoods 
+	of the graph over and over just makes it not worth it. An MCMC implementation 
+	takes the best of both worlds and combines the approach of model averaging 
+	presented on the bagged GS algorithm while saving us
+	computation time in not calculating all the score from the neighborhoods but 
+	only on one graph selected according to proposal and acceptance probabilities. 
+	\\
+	Another advantage over the MCMC algorithm is that Bagged GS can be
+	parallelized quite easily since all of its iterations are independent from
+	one another forming a nice map structure, so given more computing power we
+	could run every iteration of Bagged greedy search on its own in parallel and
+	collect the results once they are all finished.
+	\\
+	Additionally a quick idea to further improve the Bagged GS computation times: do not
+	calculate the scores on all the neighbors of the graph but only on a
+	'batch' or sample of the neighbors and then continue searching in that
+	direction. \\
 
 	\section*{Appendix}
+	R code for the Bootstrap Aggregated Greedy Search Algorithm:
+	%\lstinputlisting[language=R]{../src/bs_greedy_search.R}
+	R code for the Bagged GS vs Sample size experiment:
+	%\lstinputlisting[language=R]{../src/example2.R}
+	R code for the Bagged GS vs number of BS iterations:
+	%\lstinputlisting[language=R]{../src/example3.R}
 
 	\bibliographystyle{unsrt}
 	\bibliography{biblio}
