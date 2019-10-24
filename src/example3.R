@@ -43,5 +43,21 @@ for (j in 1:5) {
     results = c(results, AUROC) # append the value of the AUROC
   }
   # append to the results matrix
-  AUROC_matrix[j,] = n_AUROC
+  AUROC_matrix[j,] = results
 }
+
+AUROC_matrix_means = colMeans(AUROC_matrix) # calculate the means of the experiment
+AUROC_matrix_std = sqrt(apply(AUROC_matrix,2,var)) # calculate the std
+library(ggplot2)
+plot(AUROC_matrix_means, type = 'o') # starndard plot
+AUROC_df = as.data.frame(AUROC_matrix_means) # to be able to plot with ggplot
+mean_minus_std = AUROC_matrix_means - AUROC_matrix_std
+mean_plus_std = AUROC_matrix_means + AUROC_matrix_std
+p = ggplot(data=AUROC_df, aes(x=c(20, 40, 80), y=AUROC_df$AUROC_matrix_means)) +
+  geom_line() +
+  geom_point() + 
+  geom_errorbar(aes(ymin= mean_minus_std, ymax = mean_plus_std)) +
+  labs(title = "Mean AUROC vs BS-Iterations") + 
+  xlab('Number of BS Iterations') +
+  ylab('Mean AUROC') +
+  geom_point(size=3, shape=21, fill="white")  # 21 is filled circle
