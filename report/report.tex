@@ -320,31 +320,48 @@
 		\label{tabla:iBest}
 	\end{table}
 	The p-value of the \textbf{paired two-sided t-test} of the AUROC scores of the GS algorithm
-	and the Bagged GS algorithm was: \textbf{4.89e-07} suggesting very strongly that the
+	and the Bagged GS algorithm was: \textbf{4.89e-07} and the 95 percentile confidence
+	interval was $(-0.14, -0.08)$ suggesting very strongly that the
 	difference in means of AUROC scores is not 0. On the other hand doing the
 	same test on Bagged GS algorithm and MCMC AUROC score resulted on a p-value
-	of: \textbf{0.9175} strongly suggesting that there is no difference between our
+	of: \textbf{0.9175} and our 95 percentile confidence interval was $(-0.2,
+	0.2)$ strongly suggesting that there is no difference between our
 	results obtained from Bagged GS and the MCMC algorithms. Another important
 	thing to notice is that Bagged GS not only increases the mean AUROC score but
 	also \textbf{decreases its standard deviation} making it a much more stable method
-	than plain GS.
+	than plain GS. Scatter plots were made as a visual aid of our hypothesis testing results.
 	\\
 	As a side note: the amount of computing time dedicated to getting the output
-	of this table was massive due to the enormous time that Bagged GS takes to
+	of this table was massive (more than 2 hours) due to the enormous time that Bagged GS takes to
 	complete in just one configuration of the data.
+	% figure of aucroc - bs iterations
+	\begin{figure}[ht]
+		\begin{minipage}{0.48\textwidth}
+			\includegraphics[width=.95\linewidth]{scatter_gs_vs_bs_gs}
+			\centering
+			\caption{AUROC of Bagged GS and GS}
+			\label{fig:scatterBS_GS}
+		\end{minipage}\hfill
+		\begin{minipage}{0.48\textwidth}
+			\includegraphics[width=.95\linewidth]{scatter_mcmc_vs_bs_gs}
+			\centering
+			\caption{AUROC of Bagged GS and MCMC}
+			\label{fig:scatterMCMC_GS}
+    \end{minipage}
+	\end{figure}
 
 	\section{Conclusions}
-	Even though Bagged Greedy Search is a straightforward conceptually simple
-	algorithm that leads to a substantial improvement over vanilla greedy search,
+	Even though \textbf{Bagged Greedy Search} is a straightforward conceptually simple
+	algorithm that \textbf{leads to a substantial improvement} over vanilla greedy search,
 	the amount of time it takes to compute all the scores in all the neighborhoods 
-	of the graph over and over just makes it not worth it. An MCMC implementation 
-	takes the best of both worlds and combines the approach of model averaging 
+	of the graph over and over just makes it not worth it. An \textbf{MCMC} implementation 
+	takes the \textbf{best of both worlds} and combines the approach of model averaging 
 	presented on the bagged GS algorithm while saving us
 	computation time in not calculating all the score from the neighborhoods but 
 	only on one graph selected according to proposal and acceptance probabilities. 
 	\\
-	Another advantage over the MCMC algorithm is that Bagged GS can be
-	parallelized quite easily since all of its iterations are independent from
+	Another advantage over the MCMC algorithm is that \textbf{Bagged GS can be
+	parallelized} quite easily since all of its iterations are independent from
 	one another forming a nice map structure, so given more computing power we
 	could run every iteration of Bagged greedy search on its own in parallel and
 	collect the results once they are all finished.
@@ -355,12 +372,16 @@
 	direction. \\
 
 	\section*{Appendix}
+	All the code is available 
+	on: \url{
+	https://github.com/charx7/BNs-Bagged-Greedy-Search} under the /src/ folder
+	\\
 	R code for the Bootstrap Aggregated Greedy Search Algorithm:
-	%\lstinputlisting[language=R]{../src/bs_greedy_search.R}
+	\lstinputlisting[language=R]{../src/bs_greedy_search.R}
 	R code for the Bagged GS vs Sample size experiment:
-	%\lstinputlisting[language=R]{../src/example2.R}
+	\lstinputlisting[language=R]{../src/example2.R}
 	R code for the Bagged GS vs number of BS iterations:
-	%\lstinputlisting[language=R]{../src/example3.R}
+	\lstinputlisting[language=R]{../src/example3.R}
 
 	\bibliographystyle{unsrt}
 	\bibliography{biblio}
