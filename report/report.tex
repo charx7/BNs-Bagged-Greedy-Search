@@ -55,7 +55,8 @@
 	\begin{equation}
 		P(X_{1}, X_{2}, \dots ,X_{N}) = \prod_{i=1}^{N} P(X_{i} \ | \ pa(X_{i}))	
 	\end{equation}
-	Where $pa(X_{i})$ is the set of parents of the node $X_{i}$
+	Where $pa(X_{i})$ is the set of parents of the node $X_{i}$. A node $j$ is
+	defined as a parent of node $i$ if $j$ is an ancestor of $i$. 
 	But how do we 'learn' to represent
 	this conditional dependencies from data? In general learning a network
 	structure is a NP-hard problem, so we need other learning approaches such as:
@@ -95,7 +96,7 @@
 	By assuming that the variables $X_{1} \dots X_{n}$ are multivariate Gaussian
 	distributed with unknown parameters $\mu$ and $\Sigma$ and that the unknown
 	parameters are normal-Wishart distributed one can show that \eqref{eq:2}
-	reduces to the \textbf{BGe} score metric.
+	reduces to the \textbf{BGe} score metric. \cite{Lecture5}
 	\begin{equation}
 		\begin{aligned}
 		 & =P(graph) \cdot \int P(data,\theta(graph) | graph) d\theta(graph) \\	
@@ -118,7 +119,8 @@
 	search for the best graph that fits the data, lets call it $M^{*}$ by
 	comparing the current graph score that we have to its neighbors.
 	\begin{equation}
-		P(M^{*}|data) \ > \ P(graph | data)
+		score_{BGe}(M^{*}|data) \ > \ score_{BGe}(graph | data)
+		\label{eq:5}
 	\end{equation}
 	% Ahora empieza el pseudocodigo de GS algo
 	\begin{algorithm}[H]
@@ -154,11 +156,11 @@
 	this procedure until we can no longer increase our score ie; all the
 	neighbors of the graph $G$ have lower scores than $G$.
 	\subsection{Limitations of the Greedy Search Algorithm}
-	Even though Greedy Search offers us a valid and straightforward way to fit a
-	graph to our data it has many limitations, some of them are:
+	Even though Greedy Search offers us a valid and straightforward way to search
+	fot the best graph that describes our data, it has many limitations, some of them are:
 	\begin{itemize}
 		\item Greedy search algorithm can get stuck in local minima, so many
-			initializations of the algorithm are required to try to escape from it. 
+			initializations of the algorithm are required to try not to run into it. 
 		\item It is possible that some graphs of the neighborhood of $G$ have the
 			same BGe score as $G$ so a condition to break an infinite cycle of bounce
 			is required.
@@ -201,7 +203,7 @@
 			\KwData{$data$: data matrix, $inc\_start$: starting incidence matrix,
 			$M$: Bootstrap iterations}
 			\KwResult{$G^{*}$: The average incidence matrix over all boostrap
-			iterations of the vanilla greedy search algorithm}
+			iterations of the greedy search algorithm}
 			\emph{Initialize the algorithm with an empty list of incidence matrices
 			Glist}\;
 			Glist $\gets$ empty list\; 
@@ -231,7 +233,7 @@
 	metric. We did various experiments with \textbf{varying number of initial
 	datapoints} and \textbf{varying number of bootstrap iterations}. Finally a
 	comparison with an struct-MCMC (Markov chain Monte Carlo)  algorithm and
-	vanilla greedy search was made. All of the code written for this project is available for download at
+	greedy search was made. All of the code written for this project is available for download at
 	the github repository: \url{https://github.com/charx7/BNs-Bagged-Greedy-Search} as well in the appendix of the paper.
 	\subsection{AUROC Score vs Number of Bagged GS Iterations}
 	Figure \ref{fig:aurocBsIterations} shows that if we increase the amount of BS iterations on our
@@ -240,15 +242,16 @@
 	Figure \ref{fig:aurocBsIterations} the improvement of the AUROC of 80 BS
 	iterations is within the error range of of 40 BS
 	iterations, the setup for this experiment was using
-	the \textbf{RAF pathway} simulated data with $m=50$ samples. The experiment
+	the \textbf{RAF pathway} simulated data with $m=50$ samples. We used the
+	\textbf{make\_test\_Data} function found on \textbf{utils.R} with \textbf{var\_noise} set up to 1. The experiment
 	was also done with $m=100$ samples but in that case the number of BS
 	iterations did not seem to improve the AUROC score as much as in the
 	$m=50$ case. The experiment was repeated 5 times to get an estimate of the
 	mean and standard deviation of our results. To show the effect of the number of samples on the values of
-	AUROC we did another experiment described on the next sub-section.
+	AUROC we did another experiment described in the next sub-section.
 	% figure of aucroc - bs iterations
 	\begin{figure}[ht]
-		\includegraphics[width=8cm]{meanAUROCvsBSIterations}
+		\includegraphics[width=10cm]{meanAUROCvsBSIterations}
 		\centering
 		\caption{Mean AUROC vs Bootstrap Iterations on M=50 datapoints}
 		\label{fig:aurocBsIterations}
@@ -263,7 +266,7 @@
 	results.
 	% figure of aucroc - sample size 
 	\begin{figure}[ht]
-		\includegraphics[width=8cm]{auroc_sample_size}
+		\includegraphics[width=10cm]{auroc_sample_size}
 		\centering
 		\caption{Mean AUROC vs Sample Size from M=20 to M=100}
 		\label{fig:auroc_sample_size}
@@ -281,7 +284,7 @@
 	\subsection{Bagged GS vs MCMC vs GS AUROC}
 	In this experimental setting we did 3 experiments on data sets of varying
 	size: \{20, 50, 100\} and subsequently compared the AUROC score obtained with
-	Bagged GS with 40 iterations, MCMC with 20,000 iterations and vanilla GS. The
+	Bagged GS with 40 iterations, MCMC with 20,000 iterations and GS. The
 	experiment was repeated 5 times to get mean and standard deviation
 	statistics. Afterwards we did a \textbf{paired t-test} on the obtained means
 	to check for statistical significance of our results.
@@ -332,17 +335,17 @@
 	than plain GS. Scatter plots were made as a visual aid of our hypothesis testing results.
 	\\
 	As a side note: the amount of computing time dedicated to getting the output
-	of this table was massive (more than 2 hours) due to the enormous time that Bagged GS takes to
+	of this table was moderate (more than 2 hours) due to the large time that Bagged GS takes to
 	complete in just one configuration of the data.
 	% figure of aucroc - bs iterations
 	\begin{figure}[ht]
-		\begin{minipage}{0.48\textwidth}
+		\begin{minipage}{0.60\textwidth}
 			\includegraphics[width=.95\linewidth]{scatter_gs_vs_bs_gs}
 			\centering
 			\caption{AUROC of Bagged GS and GS}
 			\label{fig:scatterBS_GS}
 		\end{minipage}\hfill
-		\begin{minipage}{0.48\textwidth}
+		\begin{minipage}{0.60\textwidth}
 			\includegraphics[width=.95\linewidth]{scatter_mcmc_vs_bs_gs}
 			\centering
 			\caption{AUROC of Bagged GS and MCMC}
@@ -352,7 +355,7 @@
 
 	\section{Conclusions}
 	Even though \textbf{Bagged Greedy Search} is a straightforward conceptually simple
-	algorithm that \textbf{leads to a substantial improvement} over vanilla greedy search,
+	algorithm that \textbf{leads to a substantial improvement} over greedy search,
 	the amount of time it takes to compute all the scores in all the neighborhoods 
 	of the graph over and over just makes it not worth it. An \textbf{MCMC} implementation 
 	takes the \textbf{best of both worlds} and combines the approach of model averaging 
@@ -374,14 +377,27 @@
 	\section*{Appendix}
 	All the code is available 
 	on: \url{
-	https://github.com/charx7/BNs-Bagged-Greedy-Search} under the /src/ folder
+	https://github.com/charx7/BNs-Bagged-Greedy-Search} under the /src/ folder.
 	\\
-	R code for the Bootstrap Aggregated Greedy Search Algorithm:
-	\lstinputlisting[language=R]{../src/bs_greedy_search.R}
-	R code for the Bagged GS vs Sample size experiment:
-	\lstinputlisting[language=R]{../src/example2.R}
-	R code for the Bagged GS vs number of BS iterations:
-	\lstinputlisting[language=R]{../src/example3.R}
+	\textbf{Worked Code Example}	
+	\\
+	The first thing that our examples does is clear the R environment and console
+	outputs, afterwards we load our helper functions by sourcing the
+	\textbf{utils.R} file, this file contains the necessary data generating
+	functions \textbf{make\_test\_Data}, \textbf{make\_true\_net} and \textbf{compute\_AUROC}. We also need
+	to source the implemented \textbf{BS GS algorithm} in the
+	\textbf{bs\_greedy\_search.R} file. We set a seed for reproducibility and
+	call our data generation function with $100$ observations and a noise
+	parameter of $1$. Then we set up the BS GS algorithm parameters, in this case
+	we set up number of iterations to 40, additional calls to timing functions
+	are made to measure the times it takes for the algorithm to complete. Finally
+	we evaluate the results looping over the output list of resulting graphs and
+	average them according to the number of iterations defined above. A call to
+	compute the AUROC score is made to output the result to the console.
+	\lstinputlisting[language=R, caption={R Worked example code}]{../src/example1.R}
+	\lstinputlisting[language=R, caption={R code for the Bootstrap Aggregated Greedy Search Algorithm}]{../src/bs_greedy_search.R}
+	\lstinputlisting[language=R, caption={R code for the Bagged GS vs Sample size experiment}]{../src/example2.R}
+	\lstinputlisting[language=R, caption={R code for the Bagged GS vs number of BS iterations}]{../src/example3.R}
 
 	\bibliographystyle{unsrt}
 	\bibliography{biblio}
